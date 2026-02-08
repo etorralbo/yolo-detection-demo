@@ -2,6 +2,7 @@ package com.yolo.demo.ui
 
 import android.Manifest
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -18,11 +18,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
+import com.yolo.demo.camera.BoundingBoxTransformer
 import com.yolo.demo.camera.CameraManager
+import com.yolo.demo.model.DetectionDisplayState
 import com.yolo.demo.viewmodel.DetectionViewModel
 import com.yolo.demo.yolo.YoloObjectDetectionAnalyzer
 import org.koin.androidx.compose.koinViewModel
@@ -69,10 +72,14 @@ fun DetectionCameraScreen(
     cameraManager: CameraManager,
     viewModel: DetectionViewModel
 ) {
-    val detection by viewModel.detectionState.collectAsState()
+    val displayState by viewModel.displayState.collectAsState()
     val analyzer = viewModel.createCameraAnalyzer()
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+        val density = LocalDensity.current
+        val viewWidthPx = with(density) { maxWidth.toPx().toInt() }
+        val viewHeightPx = with(density) { maxHeight.toPx().toInt() }
+
         // Camera preview
         CameraPreview(
             cameraManager = cameraManager,
@@ -80,37 +87,37 @@ fun DetectionCameraScreen(
             modifier = Modifier.fillMaxSize()
         )
 
-        // Detection result overlay
-        detection?.let { det ->
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.TopCenter)
-                    .padding(top = 32.dp),
-                color = MaterialTheme.colorScheme.primaryContainer,
-                shadowElevation = 4.dp,
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text(
-                    text = "${det.label} - ${(det.confidence * 100).toInt()}%",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+        // Detection overlay (bounding box + label)
+        if (displayState is DetectionDisplayState.Displaying) {
+            val detection = (displayState as DetectionDisplayState.Displaying).detection
+
+            // Transform bounding box to screen coordinates using actual image dimensions
+            val transformer = BoundingBoxTransformer(
+                imageWidth = detection.sourceImageWidth,
+                imageHeight = detection.sourceImageHeight,
+                viewWidth = viewWidthPx,
+                viewHeight = viewHeightPx,
+                rotation = detection.sourceImageRotation
+            )
+
+            val transformedBox = transformer.transform(detection.boundingBox)
+
+            // Draw bounding box if transformation succeeded
+            transformedBox?.let { box ->
+                BoundingBoxOverlay(
+                    boundingBox = box,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
-        } ?: run {
-            Surface(
+
+            // Detection label at top
+            DetectionLabel(
+                label = detection.label,
+                confidence = detection.confidence,
                 modifier = Modifier
                     .align(Alignment.TopCenter)
-                    .padding(top = 32.dp),
-                color = MaterialTheme.colorScheme.surfaceVariant,
-                shadowElevation = 4.dp,
-                shape = MaterialTheme.shapes.medium
-            ) {
-                Text(
-                    text = "No object detected",
-                    style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
-                )
-            }
+                    .padding(top = 32.dp)
+            )
         }
     }
 }

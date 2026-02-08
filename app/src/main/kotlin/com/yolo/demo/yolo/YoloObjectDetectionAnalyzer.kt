@@ -28,7 +28,8 @@ class YoloObjectDetectionAnalyzer(
             bitmap = imageProxy.toBitmap() ?: return null
 
             // 2. Rotate bitmap to match device orientation
-            rotatedBitmap = bitmap.rotate(imageProxy.imageInfo.rotationDegrees)
+            val rotation = imageProxy.imageInfo.rotationDegrees
+            rotatedBitmap = bitmap.rotate(rotation)
 
             // 3. Preprocess for YOLO
             val preprocessed = preprocessor.preprocess(rotatedBitmap)
@@ -53,7 +54,12 @@ class YoloObjectDetectionAnalyzer(
                 rotatedBitmap.height
             )
 
-            selectedObject
+            // 8. Add source image metadata for coordinate transformation
+            selectedObject?.copy(
+                sourceImageWidth = rotatedBitmap.width,
+                sourceImageHeight = rotatedBitmap.height,
+                sourceImageRotation = rotation
+            )
         } catch (e: Exception) {
             e.printStackTrace()
             null
