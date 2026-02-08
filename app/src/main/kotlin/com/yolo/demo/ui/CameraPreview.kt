@@ -8,31 +8,31 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.yolo.demo.camera.CameraManager
-import kotlinx.coroutines.launch
+import com.yolo.demo.camera.YoloCameraAnalyzer
 
 @Composable
 fun CameraPreview(
     cameraManager: CameraManager,
+    analyzer: YoloCameraAnalyzer,
     modifier: Modifier = Modifier
 ) {
     val lifecycleOwner = LocalLifecycleOwner.current
-    val coroutineScope = rememberCoroutineScope()
     var surfaceRequest by remember { mutableStateOf<SurfaceRequest?>(null) }
 
     LaunchedEffect(Unit) {
-        cameraManager.startCamera(lifecycleOwner) { request ->
+        cameraManager.startCameraWithAnalysis(lifecycleOwner, { request ->
             surfaceRequest = request
-        }
+        }, analyzer)
     }
 
     DisposableEffect(Unit) {
         onDispose {
             cameraManager.stopCamera()
+            cameraManager.release()
         }
     }
 

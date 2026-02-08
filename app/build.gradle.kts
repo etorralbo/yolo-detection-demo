@@ -19,6 +19,13 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+        }
+        debug {
+            proguardFiles("proguard-rules.pro")
         }
     }
 
@@ -61,4 +68,25 @@ dependencies {
     // TensorFlow Lite
     implementation(libs.tensorflow.lite)
     implementation(libs.tensorflow.lite.gpu)
+
+    // Koin DI
+    implementation(libs.koin.core)
+    implementation(libs.koin.android)
+    implementation(libs.koin.androidx.compose)
+
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+
+    // Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // Testing
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.turbine)
+    testImplementation(libs.koin.test)
+    testImplementation(libs.koin.test.junit4)
+    testImplementation(libs.robolectric)
 }

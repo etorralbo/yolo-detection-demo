@@ -1,13 +1,20 @@
 [versions]
 agp = "8.7.3"
 kotlin = "2.1.0"
-compose-compiler = "1.5.15"
 compose-bom = "2024.12.01"
 activity-compose = "1.9.3"
 camerax = "1.5.2"
 accompanist-permissions = "0.36.0"
 play-asset-delivery = "2.2.2"
 tensorflow-lite = "2.17.0"
+koin = "4.0.1"
+kotlinx-coroutines = "1.9.0"
+lifecycle = "2.8.7"
+junit = "4.13.2"
+mockk = "1.13.13"
+turbine = "1.2.0"
+koin-test = "4.0.1"
+robolectric = "4.14.1"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -24,6 +31,21 @@ google-play-asset-delivery = { module = "com.google.android.play:asset-delivery"
 google-play-asset-delivery-ktx = { module = "com.google.android.play:asset-delivery-ktx", version.ref = "play-asset-delivery" }
 tensorflow-lite = { module = "org.tensorflow:tensorflow-lite", version.ref = "tensorflow-lite" }
 tensorflow-lite-gpu = { module = "org.tensorflow:tensorflow-lite-gpu", version.ref = "tensorflow-lite" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycle" }
+
+# Testing
+junit = { module = "junit:junit", version.ref = "junit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+koin-test = { module = "io.insert-koin:koin-test", version.ref = "koin-test" }
+koin-test-junit4 = { module = "io.insert-koin:koin-test-junit4", version.ref = "koin-test" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

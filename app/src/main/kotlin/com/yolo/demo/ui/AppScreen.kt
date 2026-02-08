@@ -1,45 +1,29 @@
 package com.yolo.demo.ui
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
-import androidx.compose.ui.platform.LocalContext
+import com.yolo.demo.viewmodel.MainViewModel
 import com.yolo.demo.yolo.assetdelivery.ModelDownloadState
-import com.yolo.demo.yolo.assetdelivery.YoloModelProvider
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun AppScreen() {
-    val context = LocalContext.current
-    val modelProvider = remember { YoloModelProvider(context) }
-    val downloadState by modelProvider.downloadState.collectAsState()
+    val mainViewModel: MainViewModel = koinViewModel()
+    val modelState by mainViewModel.modelState.collectAsState()
 
-    LaunchedEffect(Unit) {
-        if (downloadState is ModelDownloadState.NotStarted) {
-            modelProvider.requestModelDownload()
-        }
-    }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            modelProvider.cleanup()
-        }
-    }
-
-    when (val state = downloadState) {
+    when (modelState) {
         is ModelDownloadState.NotStarted,
         is ModelDownloadState.Downloading -> {
             ModelLoadingScreen()
         }
         is ModelDownloadState.Downloaded -> {
-            CameraPreviewScreen()
+            CameraPreviewScreen(yoloAnalyzer = mainViewModel.yoloAnalyzer)
         }
         is ModelDownloadState.Failed -> {
             ModelErrorScreen(
-                errorMessage = state.error,
-                onRetry = { modelProvider.requestModelDownload() }
+                errorMessage = (modelState as ModelDownloadState.Failed).error,
+                onRetry = { mainViewModel.requestModelDownload() }
             )
         }
     }
