@@ -34,6 +34,8 @@ android {
     buildFeatures {
         compose = true
     }
+
+    assetPacks.add(":assets_delivery")
 }
 
 dependencies {
@@ -51,4 +53,8 @@ dependencies {
 
     // Permissions
     implementation(libs.accompanist.permissions)
+
+    // Play Asset Delivery
+    implementation(libs.google.play.asset.delivery)
+    implementation(libs.google.play.asset.delivery.ktx)
 }

@@ -16,3 +16,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "yolo-detection-demo"
 include(":app")
+include(":assets_delivery")

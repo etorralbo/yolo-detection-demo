@@ -6,6 +6,7 @@ compose-bom = "2024.12.01"
 activity-compose = "1.9.3"
 camerax = "1.5.2"
 accompanist-permissions = "0.36.0"
+play-asset-delivery = "2.2.2"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activity-compose" }
@@ -18,8 +19,11 @@ androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.r
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
 androidx-camera-compose = { module = "androidx.camera:camera-compose", version.ref = "camerax" }
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanist-permissions" }
+google-play-asset-delivery = { module = "com.google.android.play:asset-delivery", version.ref = "play-asset-delivery" }
+google-play-asset-delivery-ktx = { module = "com.google.android.play:asset-delivery-ktx", version.ref = "play-asset-delivery" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-asset-pack = { id = "com.android.asset-pack", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
