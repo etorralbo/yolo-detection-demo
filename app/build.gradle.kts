@@ -57,4 +57,8 @@ dependencies {
     // Play Asset Delivery
     implementation(libs.google.play.asset.delivery)
     implementation(libs.google.play.asset.delivery.ktx)
+
+    // TensorFlow Lite
+    implementation(libs.tensorflow.lite)
+    implementation(libs.tensorflow.lite.gpu)
 }
